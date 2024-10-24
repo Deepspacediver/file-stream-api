@@ -43,8 +43,15 @@ model File {
   fileId   Int    @id @default(autoincrement()) @map("file_id")
   name     String @db.VarChar(50)
   link     String
-  folderId Int @map("folder_id")
+  folderId Int    @map("folder_id")
   folder   Folder @relation(fields: [folderId], references: [folderId], onDelete: Cascade)
 
   @@map("files")
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
 }
