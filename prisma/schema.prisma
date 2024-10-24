@@ -15,7 +15,7 @@ datasource db {
 
 model User {
   userId     Int     @id @default(autoincrement()) @map("user_id")
-  username   String  @db.VarChar(20)
+  username   String  @unique @db.VarChar(20)
   password   String
   mainFolder Folder?
 
