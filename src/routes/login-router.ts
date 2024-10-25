@@ -1,13 +1,24 @@
+import { User } from "@prisma/client";
 import { Router } from "express";
 import passport from "passport";
 
 const loginRouter = Router();
-loginRouter.post(
-  "/",
-  passport.authenticate("local", {
-    failureRedirect: "/login",
-    successRedirect: "/",
-  })
-);
+
+loginRouter.post("/", (req, res, next) => {
+  passport.authenticate("local", function (err: Error, user: User, _info: any) {
+    if (err) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+    if (!user) {
+      res.status(400).json({ error: "Incorrect login credentials" });
+    }
+    req.login(user, (err) => {
+      if (err) {
+        next(err);
+      }
+      res.json({ message: "You have successfully logged in." });
+    });
+  })(req, res, next);
+});
 
 export default loginRouter;
