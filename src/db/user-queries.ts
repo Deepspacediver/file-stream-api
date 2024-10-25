@@ -9,3 +9,15 @@ export const createUser = async ({ username, password }: CreateUserRequest) => {
     },
   });
 };
+
+export const getUserById = async (userId: number) => {
+  return await prisma.user.findFirst({
+    where: {
+      userId,
+    },
+    select: {
+      username: true,
+      userId: true,
+    },
+  });
+};
