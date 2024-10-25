@@ -6,8 +6,8 @@ import { createUser } from "../db/user-queries.js";
 
 export const createUserPOST = asyncHandler(async (req, res, next) => {
   schemaParser(RegisterSchema, req);
-  const { username, password } = req.body;
 
+  const { username, password } = req.body;
   bcrypt.hash(password, 10, async (err, hash) => {
     if (err) {
       return next(err);
@@ -15,7 +15,7 @@ export const createUserPOST = asyncHandler(async (req, res, next) => {
 
     const user = await createUser({ username, password: hash });
     if (!user) {
-      throw new Error("Failed to created user");
+      return next(new Error("Failed to created user"));
     }
 
     req.login(user, (err) => {
