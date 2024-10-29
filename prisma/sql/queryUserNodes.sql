@@ -2,7 +2,8 @@ WITH RECURSIVE user_nodes AS (
   SELECT 
     node_id, 
     parent_node_id,
-    name 
+    type,
+    name
   FROM 
     "nodes"
   WHERE 
@@ -11,7 +12,8 @@ WITH RECURSIVE user_nodes AS (
     SELECT 
       r_nodes.node_id,
       r_nodes.parent_node_id,
-      r_nodes.name 
+      r_nodes.type,
+      r_nodes.name
     FROM 
       "nodes" r_nodes 
     INNER JOIN user_nodes r_nodes1 
