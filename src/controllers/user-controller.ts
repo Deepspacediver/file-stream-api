@@ -9,12 +9,11 @@ import bcrypt from "bcryptjs";
 
 export const getUserDataGET = asyncHandler(async (req, res) => {
   schemaParser(UserDataSchema, req);
-  const { userId } = req.body;
-  const data = getUserData(userId);
+  const { userId } = req.params;
+  const data = await getUserData(+userId);
   if (!data) {
     res.status(404).json({ error: "User does not exist" });
   }
-
   res.json(data);
 });
 

@@ -30,7 +30,7 @@ export const CreateUserSchema = z.object({
 });
 
 export const UserDataSchema = z.object({
-  body: z.object({
+  params: z.object({
     userId: z.coerce.number({ message: "userId must be a number" }),
   }),
 });
