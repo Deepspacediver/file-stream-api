@@ -5,8 +5,8 @@ WITH RECURSIVE user_nodes AS (
     name 
   FROM 
     "nodes"
-   WHERE 
-    user_id = 9 AND node_id = 5 
+  WHERE 
+    user_id = $1 AND node_id = $2
   UNION 
     SELECT 
       r_nodes.node_id,
