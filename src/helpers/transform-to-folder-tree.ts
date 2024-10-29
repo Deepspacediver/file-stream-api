@@ -1,13 +1,4 @@
-import { NodeType } from "@prisma/client";
-
-type Node = {
-  node_id: number;
-  parent_node_id: number | null;
-  type: NodeType;
-  name: string;
-};
-
-type NodeWithSubNodes = Node & { children?: NodeWithSubNodes[] };
+import { NodeWithSubNodes, Node } from "../types/node-types.js";
 
 const getIndexedNodes = (array: Node[]) => {
   const indexedNodes: Record<string, number> = array.reduce(
