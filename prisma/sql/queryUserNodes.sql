@@ -6,7 +6,7 @@ WITH RECURSIVE user_nodes AS (
   FROM 
     "nodes"
   WHERE 
-    user_id = $1 AND node_id = $2
+    user_id = $1 AND parent_node_id IS NULL
   UNION 
     SELECT 
       r_nodes.node_id,
