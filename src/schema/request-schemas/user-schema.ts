@@ -19,12 +19,18 @@ const PasswordSchema = z.coerce
     "Password must contain a lower case letter"
   );
 
-export const RegisterSchema = z.object({
+export const CreateUserSchema = z.object({
   body: z.object({
     username: z.coerce
       .string({ message: "Username is required" })
       .min(5, { message: "Username must be at least 5 characters long" })
       .max(20, { message: "Username cannot be longer than 20 characters" }),
     password: PasswordSchema,
+  }),
+});
+
+export const UserDataSchema = z.object({
+  body: z.object({
+    userId: z.coerce.number({ message: "userId must be a number" }),
   }),
 });

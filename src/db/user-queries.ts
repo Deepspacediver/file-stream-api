@@ -12,7 +12,7 @@ export const createUser = async ({ username, password }: CreateUserRequest) => {
   });
 };
 
-export const getUserDataById = async (userId: number) => {
+export const getUserData = async (userId: number) => {
   const user = await prisma.user.findFirst({
     where: {
       userId,
