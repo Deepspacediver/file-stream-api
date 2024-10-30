@@ -8,3 +8,11 @@ export type Node = {
 };
 
 export type NodeWithSubNodes = Node & { children?: NodeWithSubNodes[] };
+
+export type CreateNode = {
+  name: string;
+  type: NodeType;
+  parentNodeId: number;
+  fileLink?: string;
+  userId?: number;
+};
