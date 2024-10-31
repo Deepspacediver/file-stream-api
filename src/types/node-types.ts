@@ -13,6 +13,7 @@ export type CreateNode = {
   name: string;
   type: NodeType;
   parentNodeId: number;
+  file: File;
   fileLink?: string;
   userId?: number;
 };
