@@ -9,6 +9,7 @@ import localStrategy from "./config/local-strategy-config.js";
 import { errorMiddleware } from "./middlewares/error-middleware.js";
 import loginRouter from "./routes/login-router.js";
 import usersRouter from "./routes/users-router.js";
+import nodeRouter from "./routes/node-router.js";
 
 declare global {
   namespace Express {
@@ -57,6 +58,7 @@ passport.deserializeUser(async (userId: number, done) => {
 
 app.use("/login", loginRouter);
 app.use("/users", usersRouter);
+app.use("/nodes", nodeRouter);
 
 app.use(errorMiddleware);
 
