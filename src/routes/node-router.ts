@@ -5,6 +5,6 @@ import { uploadNodePOST } from "../controllers/node-controller.js";
 
 const nodeRouter = Router();
 
-nodeRouter.post("/", isAuthenticated, upload.single("node"), uploadNodePOST);
+nodeRouter.post("/", isAuthenticated, upload.single("file"), uploadNodePOST);
 
 export default nodeRouter;
