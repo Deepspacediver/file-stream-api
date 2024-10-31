@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["typedSql"]
 }
 
@@ -34,7 +34,7 @@ model Node {
   nodeId Int    @id @default(autoincrement()) @map("node_id")
   name   String @db.VarChar(15)
 
-  type     NodeType      
+  type     NodeType
   fileLink String?        @map("file_link")
   link     NodeShareLink?
 
@@ -49,10 +49,11 @@ model Node {
 }
 
 model NodeShareLink {
-  linkId       Int    @id @default(autoincrement()) @map("link_id")
-  link         String
-  sharedNode   Node   @relation(fields: [sharedNodeId], references: [nodeId])
-  sharedNodeId Int    @unique @map("shared_node_id")
+  linkId       Int      @id @default(autoincrement()) @map("link_id")
+  linkHash     String   @unique
+  expiryDate   DateTime
+  sharedNode   Node     @relation(fields: [sharedNodeId], references: [nodeId])
+  sharedNodeId Int      @unique @map("shared_node_id")
 
   @@map("node_share_links")
 }
