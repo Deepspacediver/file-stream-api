@@ -16,3 +16,9 @@ export type CreateNode = {
   fileLink?: string;
   userId?: number;
 };
+
+export type CreateNodeLinkProps = {
+  nodeIdToShare: number;
+  expiryDate: Date;
+  userId: number;
+};
