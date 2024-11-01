@@ -15,10 +15,11 @@ datasource db {
 }
 
 model User {
-  userId   Int    @id @default(autoincrement()) @map("user_id")
-  username String @unique @db.VarChar(20)
-  password String
-  mainNode Node?
+  userId     Int             @id @default(autoincrement()) @map("user_id")
+  username   String          @unique @db.VarChar(20)
+  password   String
+  mainNode   Node?
+  shareLinks NodeShareLink[]
 
   @@map("users")
 }
@@ -35,8 +36,8 @@ model Node {
   name   String @db.VarChar(15)
 
   type     NodeType
-  fileLink String?        @map("file_link")
-  link     NodeShareLink?
+  fileLink String?         @map("file_link")
+  links    NodeShareLink[]
 
   userId Int?  @unique @map("user_id")
   user   User? @relation(fields: [userId], references: [userId], onDelete: Cascade)
@@ -52,8 +53,12 @@ model NodeShareLink {
   linkId       Int      @id @default(autoincrement()) @map("link_id")
   linkHash     String   @unique
   expiryDate   DateTime
+  
   sharedNode   Node     @relation(fields: [sharedNodeId], references: [nodeId])
-  sharedNodeId Int      @unique @map("shared_node_id")
+  sharedNodeId Int      @map("shared_node_id")
+
+  userId       Int      @map("user_id")
+  user         User     @relation(fields: [userId], references: [userId])
 
   @@map("node_share_links")
 }
