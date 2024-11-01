@@ -54,11 +54,11 @@ model NodeShareLink {
   linkHash     String   @unique
   expiryDate   DateTime
   
-  sharedNode   Node     @relation(fields: [sharedNodeId], references: [nodeId])
+  sharedNode   Node     @relation(fields: [sharedNodeId], references: [nodeId], onDelete: Cascade)
   sharedNodeId Int      @map("shared_node_id")
 
-  userId       Int      @map("user_id")
-  user         User     @relation(fields: [userId], references: [userId])
+  userId       Int      @map("user_id") 
+  user         User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@map("node_share_links")
 }
