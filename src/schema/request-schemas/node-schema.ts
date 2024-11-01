@@ -54,3 +54,17 @@ export const CreateNodeSchema = z
       message: "You cannot upload folder as a file",
     }
   );
+
+export const CreateSharedNodeSchema = z.object({
+  body: z.object({
+    nodeId: z.coerce.number({ message: "Folder to be shared is missing" }),
+    expiryDate: z.coerce
+      .date({ message: "Expiry date must be a date" })
+      .refine((val: Date) => val > new Date(), {
+        message: "Expiry date must be set in the future",
+      }),
+    userId: z.coerce
+      .number({ message: "Missing user of created resource" })
+      .optional(),
+  }),
+});
