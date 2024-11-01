@@ -59,7 +59,7 @@ export const createSharedNode = async (
       expiryDate,
     },
   });
-  const link = `${process.env.CLIENT_URL}/share/${sharedNode.linkHash}`;
+  const link = `${process.env.CLIENT_URL}/shared/${sharedNode.linkHash}`;
   return link;
 };
 
