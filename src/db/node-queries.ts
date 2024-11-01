@@ -92,3 +92,16 @@ export const getSharedNodeTree = async (linkHash: string) => {
 
   return transfromNodesToFolderTree(nodes);
 };
+
+export const deleteNode = async (nodeId: number) => {
+  await prisma.node.delete({
+    where: {
+      nodeId,
+      AND: {
+        parentNodeId: {
+          not: null,
+        },
+      },
+    },
+  });
+};

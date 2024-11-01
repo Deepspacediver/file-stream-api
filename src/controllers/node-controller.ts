@@ -4,10 +4,15 @@ import schemaParser from "../helpers/schema-parser.js";
 import {
   CreateNodeSchema,
   CreateSharedNodeSchema,
+  DeleteNodeSchema,
 } from "../schema/request-schemas/node-schema.js";
 import { randomUUID } from "crypto";
 import { CreateNode } from "../types/node-types.js";
-import { createNode, createSharedNode } from "../db/node-queries.js";
+import {
+  createNode,
+  createSharedNode,
+  deleteNode,
+} from "../db/node-queries.js";
 
 export const uploadNodePOST = asyncHandler(async (req, res) => {
   schemaParser(CreateNodeSchema, req);
@@ -49,4 +54,11 @@ export const createSharedNodePOST = asyncHandler(async (req, res) => {
     userId,
   });
   res.json({ link: createdSharedNode });
+});
+
+export const deleteNodeDELETE = asyncHandler(async (req, res) => {
+  schemaParser(DeleteNodeSchema, req);
+  const { nodeId } = req.params;
+  await deleteNode(+nodeId);
+  res.json({ message: "Deleted successfully." });
 });
