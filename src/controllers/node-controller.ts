@@ -1,10 +1,13 @@
 import asyncHandler from "express-async-handler";
 import cloudinary from "../config/cloudinary-config.js";
 import schemaParser from "../helpers/schema-parser.js";
-import { CreateNodeSchema } from "../schema/request-schemas/node-schema.js";
+import {
+  CreateNodeSchema,
+  CreateSharedNodeSchema,
+} from "../schema/request-schemas/node-schema.js";
 import { randomUUID } from "crypto";
 import { CreateNode } from "../types/node-types.js";
-import { createNode } from "../db/node-queries.js";
+import { createNode, createSharedNode } from "../db/node-queries.js";
 
 export const uploadNodePOST = asyncHandler(async (req, res) => {
   schemaParser(CreateNodeSchema, req);
@@ -35,4 +38,15 @@ export const uploadNodePOST = asyncHandler(async (req, res) => {
   };
   const node = await createNode(dataToSend);
   res.json({ node });
+});
+
+export const createSharedNodePOST = asyncHandler(async (req, res) => {
+  schemaParser(CreateSharedNodeSchema, req);
+  const { expiryDate, nodeId, userId } = req.body;
+  const createdSharedNode = await createSharedNode({
+    nodeIdToShare: nodeId,
+    expiryDate,
+    userId,
+  });
+  res.json({ link: createdSharedNode });
 });
