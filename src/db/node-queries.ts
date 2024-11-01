@@ -1,5 +1,10 @@
 import { queryUserNodes, queryNodesFromNodeId } from "@prisma/client/sql";
-import { CreateNode, Node, NodeWithSubNodes } from "../types/node-types.js";
+import {
+  CreateNode,
+  CreateNodeLinkProps,
+  Node,
+  NodeWithSubNodes,
+} from "../types/node-types.js";
 import prisma from "../config/prisma-config.js";
 import transfromNodesToFolderTree from "../helpers/transform-to-folder-tree.js";
 import { NodeType } from "@prisma/client";
@@ -37,10 +42,11 @@ export const createNode = async (data: CreateNode) => {
   return createdNode;
 };
 
-export const createSharedNode = async (
-  nodeIdToShare: number,
-  expiryDate: Date
-) => {
+export const createSharedNode = async ({
+  nodeIdToShare,
+  expiryDate,
+  userId,
+}: CreateNodeLinkProps) => {
   const nodeToBeShared = await prisma.node.findFirst({
     where: {
       nodeId: nodeIdToShare,
@@ -57,6 +63,7 @@ export const createSharedNode = async (
       sharedNodeId: nodeIdToShare,
       linkHash,
       expiryDate,
+      userId,
     },
   });
   const link = `${process.env.CLIENT_URL}/shared/${sharedNode.linkHash}`;
