@@ -4,6 +4,7 @@ import upload from "../config/multer-config.js";
 import {
   createSharedNodePOST,
   deleteNodeDELETE,
+  getSharedNodeGET,
   uploadNodePOST,
 } from "../controllers/node-controller.js";
 
@@ -11,7 +12,8 @@ const nodeRouter = Router();
 
 nodeRouter
   .post("/", isAuthenticated, upload.single("file"), uploadNodePOST)
+  .delete("/:nodeId", isAuthenticated, deleteNodeDELETE)
   .post("/shared", isAuthenticated, createSharedNodePOST)
-  .delete("/:nodeId", isAuthenticated, deleteNodeDELETE);
+  .get("/shared/:linkHash", getSharedNodeGET);
 
 export default nodeRouter;

@@ -5,6 +5,7 @@ import {
   CreateNodeSchema,
   CreateSharedNodeSchema,
   DeleteNodeSchema,
+  GetSharedNodeSchema,
 } from "../schema/request-schemas/node-schema.js";
 import { randomUUID } from "crypto";
 import { CreateNode } from "../types/node-types.js";
@@ -12,6 +13,7 @@ import {
   createNode,
   createSharedNode,
   deleteNode,
+  getSharedNodeTree,
 } from "../db/node-queries.js";
 
 export const uploadNodePOST = asyncHandler(async (req, res) => {
@@ -57,6 +59,13 @@ export const createSharedNodePOST = asyncHandler(async (req, res) => {
     userId,
   });
   res.json({ link: createdSharedNode });
+});
+
+export const getSharedNodeGET = asyncHandler(async (req, res) => {
+  schemaParser(GetSharedNodeSchema, req);
+  const { linkHash } = req.params;
+  const nodeTree = await getSharedNodeTree(linkHash);
+  res.json({ drive: nodeTree });
 });
 
 export const deleteNodeDELETE = asyncHandler(async (req, res) => {

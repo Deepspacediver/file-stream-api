@@ -74,3 +74,9 @@ export const DeleteNodeSchema = z.object({
     nodeId: z.coerce.number({ message: "Node id must be a number" }),
   }),
 });
+
+export const GetSharedNodeSchema = z.object({
+  params: z.object({
+    linkHash: z.string({ message: "Missing link id" }),
+  }),
+});
