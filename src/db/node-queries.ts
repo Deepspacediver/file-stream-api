@@ -1,4 +1,8 @@
-import { queryUserNodes, queryNodesFromNodeId } from "@prisma/client/sql";
+import {
+  queryUserNodes,
+  queryNodesFromNodeId,
+  queryFilesFromNode,
+} from "@prisma/client/sql";
 import {
   CreateNode,
   CreateNodeLinkProps,
@@ -9,6 +13,7 @@ import prisma from "../config/prisma-config.js";
 import transfromNodesToFolderTree from "../helpers/transform-to-folder-tree.js";
 import { NodeType } from "@prisma/client";
 import { randomUUID } from "crypto";
+import cloudinary from "../config/cloudinary-config.js";
 
 export const getNodeTree = async (
   userId: number
@@ -94,6 +99,14 @@ export const getSharedNodeTree = async (linkHash: string) => {
 };
 
 export const deleteNode = async (nodeId: number) => {
+  const fileNodesWithinDeletedNode = (await prisma.$queryRawTyped(
+    queryFilesFromNode(nodeId)
+  )) as unknown as Array<{ file_public_id: string }>;
+
+  const publicIdArray = fileNodesWithinDeletedNode.map(
+    ({ file_public_id }) => file_public_id
+  );
+
   await prisma.node.delete({
     where: {
       nodeId,
@@ -104,4 +117,5 @@ export const deleteNode = async (nodeId: number) => {
       },
     },
   });
+  await cloudinary.api.delete_resources(publicIdArray);
 };
