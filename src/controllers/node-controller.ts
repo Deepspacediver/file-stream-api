@@ -19,6 +19,7 @@ export const uploadNodePOST = asyncHandler(async (req, res) => {
   //File is checked in schema
   const file = req.file;
   let fileLink: string | null = null;
+  let filePublicId: string | null = null;
 
   if (file) {
     const b64 = Buffer.from(file.buffer).toString("base64");
@@ -31,6 +32,7 @@ export const uploadNodePOST = asyncHandler(async (req, res) => {
       flags: "attachment",
     });
     fileLink = result.secure_url;
+    filePublicId = result.public_id;
   }
 
   const { parentNodeId, name, userId, type } = req.body;
@@ -40,6 +42,7 @@ export const uploadNodePOST = asyncHandler(async (req, res) => {
     userId: +userId,
     type,
     ...(!!fileLink && { fileLink }),
+    ...(!!filePublicId && { publicId: filePublicId }),
   };
   const node = await createNode(dataToSend);
   res.json({ node });

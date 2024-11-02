@@ -5,6 +5,8 @@ export type Node = {
   parent_node_id: number | null;
   type: NodeType;
   name: string;
+  fileLink?: string;
+  filePublicId?: string;
 };
 
 export type NodeWithSubNodes = Node & { children?: NodeWithSubNodes[] };
