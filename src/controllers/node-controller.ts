@@ -6,6 +6,7 @@ import {
   CreateSharedNodeSchema,
   DeleteNodeSchema,
   GetSharedNodeSchema,
+  UpdateNodeNameSchema,
 } from "../schema/request-schemas/node-schema.js";
 import { randomUUID } from "crypto";
 import { CreateNode } from "../types/node-types.js";
@@ -14,6 +15,7 @@ import {
   createSharedNode,
   deleteNode,
   getSharedNodeTree,
+  updateNodeName,
 } from "../db/node-queries.js";
 
 export const uploadNodePOST = asyncHandler(async (req, res) => {
@@ -73,4 +75,12 @@ export const deleteNodeDELETE = asyncHandler(async (req, res) => {
   const { nodeId } = req.params;
   await deleteNode(+nodeId);
   res.json({ message: "Deleted successfully." });
+});
+
+export const updateNodeNamePUT = asyncHandler(async (req, res) => {
+  schemaParser(UpdateNodeNameSchema, req);
+  const { nodeId } = req.params;
+  const { newName } = req.body;
+  const node = await updateNodeName(+nodeId, newName);
+  res.json({ node });
 });

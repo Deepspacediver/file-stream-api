@@ -119,3 +119,16 @@ export const deleteNode = async (nodeId: number) => {
   });
   await cloudinary.api.delete_resources(publicIdArray);
 };
+
+export const updateNodeName = async (nodeId: number, newName: string) => {
+  const updatedNode = await prisma.node.update({
+    where: {
+      nodeId,
+    },
+    data: {
+      name: newName,
+    },
+  });
+
+  return updatedNode;
+};

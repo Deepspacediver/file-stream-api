@@ -80,3 +80,12 @@ export const GetSharedNodeSchema = z.object({
     linkHash: z.string({ message: "Missing link id" }),
   }),
 });
+
+export const UpdateNodeNameSchema = z.object({
+  params: z.object({
+    nodeId: z.coerce.number({ message: "Node id must be a number" }),
+  }),
+  body: z.object({
+    newName: z.string({ message: "Missing a new name to update the resource" }),
+  }),
+});
