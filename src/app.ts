@@ -7,8 +7,9 @@ import { User as UserPrisma, Prisma } from "@prisma/client";
 import passport from "passport";
 import localStrategy from "./config/local-strategy-config.js";
 import { errorMiddleware } from "./middlewares/error-middleware.js";
-import registerRouter from "./routes/register-router.js";
 import loginRouter from "./routes/login-router.js";
+import usersRouter from "./routes/users-router.js";
+import nodeRouter from "./routes/node-router.js";
 
 declare global {
   namespace Express {
@@ -55,8 +56,9 @@ passport.deserializeUser(async (userId: number, done) => {
   return user ? done(null, user) : done(null);
 });
 
-app.use("/register", registerRouter);
 app.use("/login", loginRouter);
+app.use("/users", usersRouter);
+app.use("/nodes", nodeRouter);
 
 app.use(errorMiddleware);
 

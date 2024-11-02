@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["typedSql"]
 }
 
 datasource db {
@@ -14,39 +15,13 @@ datasource db {
 }
 
 model User {
-  userId     Int     @id @default(autoincrement()) @map("user_id")
-  username   String  @unique @db.VarChar(20)
+  userId     Int             @id @default(autoincrement()) @map("user_id")
+  username   String          @unique @db.VarChar(20)
   password   String
-  mainFolder Folder?
+  mainNode   Node?
+  shareLinks NodeShareLink[]
 
   @@map("users")
-}
-
-model Folder {
-  folderId Int    @id @default(autoincrement()) @map("folder_id")
-  name     String @db.VarChar(15)
-
-  userId Int?  @unique @map("user_id")
-  user   User? @relation(fields: [userId], references: [userId], onDelete: Cascade)
-
-  parentFolderId Int? @map("parent_folder_id")
-
-  parentFolder Folder?  @relation("ParentFolderChildFolder", fields: [parentFolderId], references: [folderId], onDelete: Cascade)
-  childFolders Folder[] @relation("ParentFolderChildFolder")
-
-  files File[]
-
-  @@map("folders")
-}
-
-model File {
-  fileId   Int    @id @default(autoincrement()) @map("file_id")
-  name     String @db.VarChar(50)
-  link     String
-  folderId Int    @map("folder_id")
-  folder   Folder @relation(fields: [folderId], references: [folderId], onDelete: Cascade)
-
-  @@map("files")
 }
 
 model Session {
@@ -54,4 +29,42 @@ model Session {
   sid       String   @unique
   data      String
   expiresAt DateTime
+}
+
+model Node {
+  nodeId Int    @id @default(autoincrement()) @map("node_id")
+  name   String @db.VarChar(15)
+
+  type         NodeType
+  fileLink     String?         @map("file_link")
+  filePublicId String?         @map("file_public_id")
+  links        NodeShareLink[]
+
+  userId Int?  @unique @map("user_id")
+  user   User? @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  parentNodeId Int?   @map("parent_node_id")
+  parentNode   Node?  @relation("ParentNodeChildNode", fields: [parentNodeId], references: [nodeId], onDelete: Cascade)
+  childNode    Node[] @relation("ParentNodeChildNode")
+
+  @@map("nodes")
+}
+
+model NodeShareLink {
+  linkId     Int      @id @default(autoincrement()) @map("link_id")
+  linkHash   String   @unique
+  expiryDate DateTime
+
+  sharedNode   Node @relation(fields: [sharedNodeId], references: [nodeId], onDelete: Cascade)
+  sharedNodeId Int  @map("shared_node_id")
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@map("node_share_links")
+}
+
+enum NodeType {
+  FILE
+  FOLDER
 }
