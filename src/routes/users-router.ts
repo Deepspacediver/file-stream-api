@@ -6,6 +6,6 @@ import {
 
 const usersRouter = Router();
 
-usersRouter.get("/:userId", getUserDataGET).post("/:userId", createUserPOST);
+usersRouter.get("/:userId", getUserDataGET).post("/", createUserPOST);
 
 export default usersRouter;
