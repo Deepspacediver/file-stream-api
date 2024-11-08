@@ -10,6 +10,7 @@ import { errorMiddleware } from "./middlewares/error-middleware.js";
 import loginRouter from "./routes/login-router.js";
 import usersRouter from "./routes/users-router.js";
 import nodeRouter from "./routes/node-router.js";
+import cors from "cors";
 
 declare global {
   namespace Express {
@@ -19,11 +20,12 @@ declare global {
 
 const app = express();
 
-app.use((_req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_URL!);
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  next();
-});
+const corsConfig = {
+  origin: process.env.CLIENT_URL,
+};
+
+app.use(cors(corsConfig));
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
