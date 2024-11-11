@@ -1,6 +1,7 @@
 import { User } from "@prisma/client";
 import { Router } from "express";
 import passport from "passport";
+import { setAuthCookie } from "../helpers/auth-helpers.js";
 
 const loginRouter = Router();
 
@@ -16,7 +17,8 @@ loginRouter.post("/", (req, res, next) => {
       if (err) {
         next(err);
       }
-      res.json({ message: "You have successfully logged in." });
+      setAuthCookie(user, res);
+      res.json({ message: "You have successfully logged in" });
     });
   })(req, res, next);
 });
