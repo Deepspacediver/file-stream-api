@@ -3,9 +3,9 @@ import { Router } from "express";
 import passport from "passport";
 import { setAuthCookie } from "../helpers/auth-helpers.js";
 
-const loginRouter = Router();
+const authRouter = Router();
 
-loginRouter.post("/", (req, res, next) => {
+authRouter.post("/login", (req, res, next) => {
   passport.authenticate("local", function (err: Error, user: User, _info: any) {
     if (err) {
       res.status(500).json({ error: "Internal server error" });
@@ -23,4 +23,4 @@ loginRouter.post("/", (req, res, next) => {
   })(req, res, next);
 });
 
-export default loginRouter;
+export default authRouter;

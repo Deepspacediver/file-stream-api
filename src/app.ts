@@ -7,11 +7,11 @@ import { User as UserPrisma, Prisma } from "@prisma/client";
 import passport from "passport";
 import localStrategy from "./config/local-strategy-config.js";
 import { errorMiddleware } from "./middlewares/error-middleware.js";
-import loginRouter from "./routes/login-router.js";
 import usersRouter from "./routes/users-router.js";
 import nodeRouter from "./routes/node-router.js";
 import cors from "cors";
 import jwtStrategy from "./config/jwt-config.js";
+import authRouter from "./routes/auth-router.js";
 
 declare global {
   namespace Express {
@@ -61,7 +61,7 @@ passport.deserializeUser(async (userId: number, done) => {
 
 passport.use(jwtStrategy);
 
-app.use("/login", loginRouter);
+app.use("/auth", authRouter);
 app.use("/users", usersRouter);
 app.use("/nodes", nodeRouter);
 
