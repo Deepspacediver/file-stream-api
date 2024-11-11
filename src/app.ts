@@ -11,6 +11,7 @@ import loginRouter from "./routes/login-router.js";
 import usersRouter from "./routes/users-router.js";
 import nodeRouter from "./routes/node-router.js";
 import cors from "cors";
+import jwtStrategy from "./config/jwt-config.js";
 
 declare global {
   namespace Express {
@@ -57,6 +58,8 @@ passport.deserializeUser(async (userId: number, done) => {
 
   return user ? done(null, user) : done(null);
 });
+
+passport.use(jwtStrategy);
 
 app.use("/login", loginRouter);
 app.use("/users", usersRouter);
