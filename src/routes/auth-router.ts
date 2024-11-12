@@ -1,10 +1,12 @@
 import { User } from "@prisma/client";
 import { Router } from "express";
 import passport from "passport";
+import { setAuthCookie } from "../helpers/auth-helpers.js";
+import { getUserFromCookieGET } from "../controllers/auth-controller.js";
 
-const loginRouter = Router();
+const authRouter = Router();
 
-loginRouter.post("/", (req, res, next) => {
+authRouter.post("/login", (req, res, next) => {
   passport.authenticate("local", function (err: Error, user: User, _info: any) {
     if (err) {
       res.status(500).json({ error: "Internal server error" });
@@ -16,9 +18,12 @@ loginRouter.post("/", (req, res, next) => {
       if (err) {
         next(err);
       }
-      res.json({ message: "You have successfully logged in." });
+      setAuthCookie(user, res);
+      res.json({ message: "You have successfully logged in" });
     });
   })(req, res, next);
 });
 
-export default loginRouter;
+authRouter.get("/me", getUserFromCookieGET);
+
+export default authRouter;
