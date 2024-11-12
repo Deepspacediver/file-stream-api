@@ -12,6 +12,7 @@ import nodeRouter from "./routes/node-router.js";
 import cors from "cors";
 import jwtStrategy from "./config/jwt-config.js";
 import authRouter from "./routes/auth-router.js";
+import cookies from "cookie-parser";
 
 declare global {
   namespace Express {
@@ -26,6 +27,7 @@ const corsConfig = {
 };
 
 app.use(cors(corsConfig));
+app.use(cookies());
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
