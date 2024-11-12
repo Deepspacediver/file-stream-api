@@ -4,13 +4,13 @@ import {
   CreateUserSchema,
   UserDataSchema,
 } from "../schema/request-schemas/user-schema.js";
-import { createUser, getUserData } from "../db/user-queries.js";
+import { createUser, getUserDataWithNodeTree } from "../db/user-queries.js";
 import bcrypt from "bcryptjs";
 
-export const getUserDataGET = asyncHandler(async (req, res) => {
+export const getUserDataWithNodeTreeGET = asyncHandler(async (req, res) => {
   schemaParser(UserDataSchema, req);
   const { userId } = req.params;
-  const data = await getUserData(+userId);
+  const data = await getUserDataWithNodeTree(+userId);
   if (!data) {
     res.status(404).json({ error: "User does not exist" });
   }
