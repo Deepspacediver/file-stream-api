@@ -2,6 +2,7 @@ import { User } from "@prisma/client";
 import { Router } from "express";
 import passport from "passport";
 import { setAuthCookie } from "../helpers/auth-helpers.js";
+import { getUserFromCookieGET } from "../controllers/auth-controller.js";
 
 const authRouter = Router();
 
@@ -22,5 +23,7 @@ authRouter.post("/login", (req, res, next) => {
     });
   })(req, res, next);
 });
+
+authRouter.get("/me", getUserFromCookieGET);
 
 export default authRouter;
