@@ -9,7 +9,7 @@ import localStrategy from "./config/local-strategy-config.js";
 import { errorMiddleware } from "./middlewares/error-middleware.js";
 import usersRouter from "./routes/users-router.js";
 import nodeRouter from "./routes/node-router.js";
-import cors from "cors";
+import cors, { CorsOptions } from "cors";
 import jwtStrategy from "./config/jwt-config.js";
 import authRouter from "./routes/auth-router.js";
 import cookies from "cookie-parser";
@@ -22,8 +22,9 @@ declare global {
 
 const app = express();
 
-const corsConfig = {
+const corsConfig: CorsOptions = {
   origin: process.env.CLIENT_URL,
+  credentials: true,
 };
 
 app.use(cors(corsConfig));
