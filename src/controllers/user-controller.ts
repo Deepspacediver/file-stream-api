@@ -6,6 +6,7 @@ import {
 } from "../schema/request-schemas/user-schema.js";
 import { createUser, getUserDataWithNodeTree } from "../db/user-queries.js";
 import bcrypt from "bcryptjs";
+import { setAuthCookie } from "../helpers/auth-helpers.js";
 
 export const getUserDataWithNodeTreeGET = asyncHandler(async (req, res) => {
   schemaParser(UserDataSchema, req);
@@ -35,7 +36,8 @@ export const createUserPOST = asyncHandler(async (req, res, next) => {
       if (err) {
         next(err);
       }
-      res.json({ message: "You have successfully registered." });
+      setAuthCookie({ username: user.username, userId: user.userId }, res);
+      res.json({ username: user.username, userId: user.userId });
     });
   });
 });
