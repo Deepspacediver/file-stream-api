@@ -14,6 +14,7 @@ export const getUserDataWithNodeTreeGET = asyncHandler(async (req, res) => {
   const data = await getUserDataWithNodeTree(+userId);
   if (!data) {
     res.status(404).json({ error: "User does not exist" });
+    return;
   }
   res.json(data);
 });
@@ -36,7 +37,7 @@ export const createUserPOST = asyncHandler(async (req, res, next) => {
       if (err) {
         next(err);
       }
-      setAuthCookie({ username: user.username, userId: user.userId }, res);
+      setAuthCookie(user, res);
       res.json({ username: user.username, userId: user.userId });
     });
   });

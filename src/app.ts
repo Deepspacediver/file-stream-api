@@ -3,7 +3,7 @@ import express from "express";
 import expressSession from "express-session";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import prisma from "./config/prisma-config.js";
-import { User as UserPrisma, Prisma } from "@prisma/client";
+import { User as UserPrisma } from "@prisma/client";
 import passport from "passport";
 import localStrategy from "./config/local-strategy-config.js";
 import { errorMiddleware } from "./middlewares/error-middleware.js";

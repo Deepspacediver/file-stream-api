@@ -10,16 +10,18 @@ authRouter.post("/login", (req, res, next) => {
   passport.authenticate("local", function (err: Error, user: User, _info: any) {
     if (err) {
       res.status(500).json({ error: "Internal server error" });
+      return;
     }
     if (!user) {
       res.status(400).json({ error: "Incorrect login credentials" });
+      return;
     }
     req.login(user, (err) => {
       if (err) {
         next(err);
       }
       setAuthCookie(user, res);
-      res.json({ message: "You have successfully logged in" });
+      res.json({ user: { username: user.username, userId: user.userId } });
     });
   })(req, res, next);
 });
