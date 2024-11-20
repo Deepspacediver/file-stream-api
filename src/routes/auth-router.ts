@@ -2,7 +2,10 @@ import { User } from "@prisma/client";
 import { Router } from "express";
 import passport from "passport";
 import { setAuthCookie } from "../helpers/auth-helpers.js";
-import { getUserFromCookieGET } from "../controllers/auth-controller.js";
+import {
+  getUserFromCookieGET,
+  logoutPOST,
+} from "../controllers/auth-controller.js";
 
 const authRouter = Router();
 
@@ -21,11 +24,11 @@ authRouter.post("/login", (req, res, next) => {
         next(err);
       }
       setAuthCookie(user, res);
-      res.json({ user: { username: user.username, userId: user.userId } });
+      res.json({ username: user.username, userId: user.userId });
     });
   })(req, res, next);
 });
 
-authRouter.get("/me", getUserFromCookieGET);
+authRouter.get("/me", getUserFromCookieGET).post("/logout", logoutPOST);
 
 export default authRouter;
