@@ -23,3 +23,14 @@ export const getUserFromCookieGET = asyncHandler(async (req, res, _next) => {
     res.json({ username: user.username, userId: user.userId });
   });
 });
+
+export const logoutPOST = asyncHandler(async (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      next(err);
+      return;
+    }
+    res.cookie("auth_cookie", "", { expires: new Date() });
+    res.json({ message: "You have been successfully logged out" });
+  });
+});
