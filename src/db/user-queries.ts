@@ -1,3 +1,4 @@
+import { NodeType } from "@prisma/client";
 import prisma from "../config/prisma-config.js";
 import { CreateUserRequest } from "../types/user-types.js";
 import { getNodeTree } from "./node-queries.js";
@@ -7,6 +8,12 @@ export const createUser = async ({ username, password }: CreateUserRequest) => {
     data: {
       username,
       password,
+      mainNode: {
+        create: {
+          name: "Home",
+          type: NodeType.FOLDER,
+        },
+      },
     },
   });
 };
