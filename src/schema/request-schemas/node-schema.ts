@@ -89,3 +89,9 @@ export const UpdateNodeNameSchema = z.object({
     newName: z.string({ message: "Missing a new name to update the resource" }),
   }),
 });
+
+export const GetUserFoldersSchema = z.object({
+  params: z.object({
+    userId: z.coerce.number({ message: "User id must be a numer" }),
+  }),
+});
