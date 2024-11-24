@@ -2,6 +2,7 @@ import { NodeType } from "@prisma/client";
 import prisma from "../config/prisma-config.js";
 import { CreateUserRequest } from "../types/user-types.js";
 import { getNodeTree } from "./node-queries.js";
+import { queryUserFolders } from "@prisma/client/sql";
 
 export const createUser = async ({ username, password }: CreateUserRequest) => {
   return await prisma.user.create({
@@ -10,7 +11,7 @@ export const createUser = async ({ username, password }: CreateUserRequest) => {
       password,
       mainNode: {
         create: {
-          name: "Home",
+          name: "Drive",
           type: NodeType.FOLDER,
         },
       },
@@ -47,4 +48,10 @@ export const getUserDataWithNodeTree = async (userId: number) => {
     username: user.username,
     drive: nodeTree,
   };
+};
+
+export const getUserFolders = async (userId: number) => {
+  const folders = await prisma.$queryRawTyped(queryUserFolders(userId));
+
+  return folders;
 };

@@ -4,9 +4,14 @@ import {
   CreateUserSchema,
   UserDataSchema,
 } from "../schema/request-schemas/user-schema.js";
-import { createUser, getUserDataWithNodeTree } from "../db/user-queries.js";
+import {
+  createUser,
+  getUserDataWithNodeTree,
+  getUserFolders,
+} from "../db/user-queries.js";
 import bcrypt from "bcryptjs";
 import { setAuthCookie } from "../helpers/auth-helpers.js";
+import { GetUserFoldersSchema } from "../schema/request-schemas/node-schema.js";
 
 export const getUserDataWithNodeTreeGET = asyncHandler(async (req, res) => {
   schemaParser(UserDataSchema, req);
@@ -41,4 +46,11 @@ export const createUserPOST = asyncHandler(async (req, res, next) => {
       res.json({ username: user.username, userId: user.userId });
     });
   });
+});
+
+export const getUserFolderGET = asyncHandler(async (req, res) => {
+  schemaParser(GetUserFoldersSchema, req);
+  const { userId } = req.params;
+  const folders = await getUserFolders(+userId);
+  res.json(folders);
 });
