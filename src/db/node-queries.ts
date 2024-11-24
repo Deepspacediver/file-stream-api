@@ -1,51 +1,9 @@
-import {
-  queryUserNodes,
-  queryNodesFromNodeId,
-  queryFilesFromNode,
-} from "@prisma/client/sql";
-import {
-  CreateNode,
-  CreateNodeLinkProps,
-  Node,
-  NodeWithSubNodes,
-} from "../types/node-types.js";
+import { queryNodesFromNodeId } from "@prisma/client/sql";
+import { CreateNodeLinkProps, Node } from "../types/node-types.js";
 import prisma from "../config/prisma-config.js";
 import transfromNodesToFolderTree from "../helpers/transform-to-folder-tree.js";
 import { NodeType } from "@prisma/client";
 import { randomUUID } from "crypto";
-import cloudinary from "../config/cloudinary-config.js";
-
-export const getNodeTree = async (
-  userId: number
-): Promise<NodeWithSubNodes | null> => {
-  const userNodes = (await prisma.$queryRawTyped(queryUserNodes(userId))) as
-    | Node[]
-    | null;
-
-  if (!userNodes) {
-    return null;
-  }
-
-  const nodeTree = transfromNodesToFolderTree(userNodes);
-
-  return nodeTree;
-};
-
-export const createNode = async (data: CreateNode) => {
-  const { parentNodeId, name, type, userId, fileLink } = data;
-  const isNodeFile = type === NodeType.FILE;
-
-  const createdNode = await prisma.node.create({
-    data: {
-      parentNodeId,
-      name,
-      type,
-      userId,
-      ...(isNodeFile && { fileLink }),
-    },
-  });
-  return createdNode;
-};
 
 export const createSharedNode = async ({
   nodeIdToShare,
@@ -96,39 +54,4 @@ export const getSharedNodeTree = async (linkHash: string) => {
   }
 
   return transfromNodesToFolderTree(nodes);
-};
-
-export const deleteNode = async (nodeId: number) => {
-  const fileNodesWithinDeletedNode = (await prisma.$queryRawTyped(
-    queryFilesFromNode(nodeId)
-  )) as unknown as Array<{ file_public_id: string }>;
-
-  const publicIdArray = fileNodesWithinDeletedNode.map(
-    ({ file_public_id }) => file_public_id
-  );
-
-  await prisma.node.delete({
-    where: {
-      nodeId,
-      AND: {
-        parentNodeId: {
-          not: null,
-        },
-      },
-    },
-  });
-  await cloudinary.api.delete_resources(publicIdArray);
-};
-
-export const updateNodeName = async (nodeId: number, newName: string) => {
-  const updatedNode = await prisma.node.update({
-    where: {
-      nodeId,
-    },
-    data: {
-      name: newName,
-    },
-  });
-
-  return updatedNode;
 };

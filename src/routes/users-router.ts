@@ -1,15 +1,28 @@
 import { Router } from "express";
 import {
   createUserPOST,
+  deleteNodeDELETE,
   getUserDataWithNodeTreeGET,
-  getUserFolderGET,
+  getUserFoldersGET,
+  updateNodeNamePUT,
+  uploadNodePOST,
 } from "../controllers/user-controller.js";
+import isAuthenticated from "../middlewares/is-authenticated.js";
+import upload from "../config/multer-config.js";
 
 const usersRouter = Router();
 
 usersRouter
-  .get("/:userId", getUserDataWithNodeTreeGET)
   .post("/", createUserPOST)
-  .get("/:userId/folders", getUserFolderGET);
+  .get("/:userId", getUserDataWithNodeTreeGET)
+  .post(
+    "/:userId/nodes",
+    isAuthenticated,
+    upload.single("file"),
+    uploadNodePOST
+  )
+  .put("/:userId/nodes/:nodeId", isAuthenticated, updateNodeNamePUT)
+  .get("/:userId/folders", getUserFoldersGET)
+  .delete("/:userId/nodes/:nodeID", isAuthenticated, deleteNodeDELETE);
 
 export default usersRouter;
