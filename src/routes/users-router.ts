@@ -22,7 +22,7 @@ usersRouter
     uploadNodePOST
   )
   .put("/:userId/nodes/:nodeId", isAuthenticated, updateNodeNamePUT)
-  .get("/:userId/folders", getUserFoldersGET)
-  .delete("/:userId/nodes/:nodeID", isAuthenticated, deleteNodeDELETE);
+  .delete("/:userId/nodes/:nodeId", isAuthenticated, deleteNodeDELETE)
+  .get("/:userId/folders", getUserFoldersGET);
 
 export default usersRouter;

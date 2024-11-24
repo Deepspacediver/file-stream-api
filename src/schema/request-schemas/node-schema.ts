@@ -5,6 +5,11 @@ const FILE_SIZE_LIMIT = 5242880;
 
 export const CreateNodeSchema = z
   .object({
+    params: z.object({
+      userId: z.coerce
+        .number({ message: "User id must be a number" })
+        .optional(),
+    }),
     file: z
       .object({
         fieldname: z.string({
@@ -27,9 +32,6 @@ export const CreateNodeSchema = z
       parentNodeId: z.coerce.number({
         message: "Uploaded resource does not have parent folder",
       }),
-      userId: z.coerce
-        .number({ message: "Missing user of created resource" })
-        .optional(),
     }),
   })
   .refine(
@@ -57,15 +59,13 @@ export const CreateNodeSchema = z
 
 export const CreateSharedNodeSchema = z.object({
   body: z.object({
-    nodeId: z.coerce.number({ message: "Folder to be shared is missing" }),
+    nodeId: z.coerce.number({ message: "Node id must be an umber" }),
     expiryDate: z.coerce
       .date({ message: "Expiry date must be a date" })
       .refine((val: Date) => val > new Date(), {
         message: "Expiry date must be set in the future",
       }),
-    userId: z.coerce
-      .number({ message: "Missing user of created resource" })
-      .optional(),
+    userId: z.coerce.number({ message: "User id must be a number " }),
   }),
 });
 
@@ -77,16 +77,19 @@ export const DeleteNodeSchema = z.object({
 
 export const GetSharedNodeSchema = z.object({
   params: z.object({
-    linkHash: z.string({ message: "Missing link id" }),
+    linkHash: z.string({ message: "Link to the resource is incorrect" }),
   }),
 });
 
 export const UpdateNodeNameSchema = z.object({
   params: z.object({
     nodeId: z.coerce.number({ message: "Node id must be a number" }),
+    userId: z.coerce.number({ message: "User id must be a number" }),
   }),
   body: z.object({
-    newName: z.string({ message: "Missing a new name to update the resource" }),
+    newName: z.string({
+      message: "New name for the resource must be a string",
+    }),
   }),
 });
 

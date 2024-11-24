@@ -86,7 +86,8 @@ export const uploadNodePOST = asyncHandler(async (req, res) => {
     fileLink = result.secure_url;
     filePublicId = result.public_id;
   }
-  const { parentNodeId, name, userId, type } = req.body;
+  const { parentNodeId, name, type } = req.body;
+  const { userId } = req.params;
   const dataToSend: CreateNode = {
     parentNodeId: +parentNodeId,
     name,
