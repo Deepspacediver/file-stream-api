@@ -4,7 +4,7 @@ import {
   deleteNodeDELETE,
   getUserDataWithNodeTreeGET,
   getUserFoldersGET,
-  updateNodeNamePUT,
+  updateNodeNamePOST,
   uploadNodePOST,
 } from "../controllers/user-controller.js";
 import isAuthenticated from "../middlewares/is-authenticated.js";
@@ -21,7 +21,7 @@ usersRouter
     upload.single("file"),
     uploadNodePOST
   )
-  .put("/:userId/nodes/:nodeId", isAuthenticated, updateNodeNamePUT)
+  .post("/:userId/nodes/:nodeId", isAuthenticated, updateNodeNamePOST)
   .delete("/:userId/nodes/:nodeId", isAuthenticated, deleteNodeDELETE)
   .get("/:userId/folders", getUserFoldersGET);
 
