@@ -18,7 +18,7 @@ model User {
   userId     Int             @id @default(autoincrement()) @map("user_id")
   username   String          @unique @db.VarChar(20)
   password   String
-  mainNode   Node?
+  nodes   Node[]
   shareLinks NodeShareLink[]
 
   @@map("users")
@@ -40,7 +40,7 @@ model Node {
   filePublicId String?         @map("file_public_id")
   links        NodeShareLink[]
 
-  userId Int?  @unique @map("user_id")
+  userId Int?   @map("user_id")
   user   User? @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   parentNodeId Int?   @map("parent_node_id")
