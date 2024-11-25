@@ -97,15 +97,15 @@ export const uploadNodePOST = asyncHandler(async (req, res) => {
     ...(!!filePublicId && { publicId: filePublicId }),
   };
   const node = await createNode(dataToSend);
-  res.json({ node });
+  res.json(node);
 });
 
-export const updateNodeNamePUT = asyncHandler(async (req, res) => {
+export const updateNodeNamePOST = asyncHandler(async (req, res) => {
   schemaParser(UpdateNodeNameSchema, req);
   const { nodeId } = req.params;
   const { newName } = req.body;
   const node = await updateNodeName(+nodeId, newName);
-  res.json({ node });
+  res.json(node);
 });
 
 export const deleteNodeDELETE = asyncHandler(async (req, res) => {
