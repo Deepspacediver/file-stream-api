@@ -16,7 +16,7 @@ export const createUser = async ({ username, password }: CreateUserRequest) => {
     data: {
       username,
       password,
-      mainNode: {
+      nodes: {
         create: {
           name: "Drive",
           type: NodeType.FOLDER,
@@ -126,6 +126,10 @@ export const getUserDataWithNodeTree = async (userId: number) => {
 
 export const getUserFolders = async (userId: number) => {
   const folders = await prisma.$queryRawTyped(queryUserFolders(userId));
+  const mappedFolders = folders.map(({ node_id, name }) => ({
+    nodeId: node_id,
+    name,
+  }));
 
-  return folders;
+  return mappedFolders;
 };
