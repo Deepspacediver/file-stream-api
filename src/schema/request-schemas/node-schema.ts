@@ -25,7 +25,9 @@ export const CreateNodeSchema = z
       })
       .optional(),
     body: z.object({
-      name: z.string({ message: "Name is required" }),
+      name: z
+        .string({ message: "Name is required" })
+        .max(15, { message: "Name cannot exceed 15 characters" }),
       type: z.nativeEnum(NodeType, {
         message: "You can only create folders or files",
       }),
@@ -87,14 +89,16 @@ export const UpdateNodeNameSchema = z.object({
     userId: z.coerce.number({ message: "User id must be a number" }),
   }),
   body: z.object({
-    newName: z.string({
-      message: "New name for the resource must be a string",
-    }),
+    newName: z
+      .string({
+        message: "New name for the resource must be a string",
+      })
+      .max(15, { message: "Name cannot exceed 15 characters" }),
   }),
 });
 
 export const GetUserFoldersSchema = z.object({
   params: z.object({
-    userId: z.coerce.number({ message: "User id must be a numer" }),
+    userId: z.coerce.number({ message: "User id must be a number" }),
   }),
 });
