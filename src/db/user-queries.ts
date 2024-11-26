@@ -44,7 +44,7 @@ export const getUserData = async (userId: number) => {
 };
 
 export const createNode = async (data: CreateNode) => {
-  const { parentNodeId, name, type, userId, fileLink } = data;
+  const { parentNodeId, name, type, userId, fileLink, filePublicId } = data;
   const isNodeFile = type === NodeType.FILE;
 
   const createdNode = await prisma.node.create({
@@ -54,6 +54,14 @@ export const createNode = async (data: CreateNode) => {
       type,
       userId,
       ...(isNodeFile && { fileLink }),
+      ...(!!filePublicId && { filePublicId }),
+    },
+    select: {
+      parentNodeId: true,
+      name: true,
+      type: true,
+      userId: true,
+      fileLink: true,
     },
   });
   return createdNode;

@@ -83,6 +83,7 @@ export const uploadNodePOST = asyncHandler(async (req, res) => {
       resource_type: "auto",
       flags: "attachment",
     });
+    // console.log(result);
     fileLink = result.secure_url;
     filePublicId = result.public_id;
   }
@@ -94,7 +95,7 @@ export const uploadNodePOST = asyncHandler(async (req, res) => {
     userId: +userId,
     type,
     ...(!!fileLink && { fileLink }),
-    ...(!!filePublicId && { publicId: filePublicId }),
+    ...(!!filePublicId && { filePublicId }),
   };
   const node = await createNode(dataToSend);
   res.json(node);

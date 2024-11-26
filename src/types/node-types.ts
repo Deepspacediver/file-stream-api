@@ -17,6 +17,7 @@ export type CreateNode = {
   parentNodeId: number;
   fileLink?: string;
   userId?: number;
+  filePublicId?: string;
 };
 
 export type CreateNodeLinkProps = {
