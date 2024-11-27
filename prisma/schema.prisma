@@ -40,8 +40,8 @@ model Node {
   filePublicId String?         @map("file_public_id")
   links        NodeShareLink[]
 
-  userId Int?   @map("user_id")
-  user   User? @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   parentNodeId Int?   @map("parent_node_id")
   parentNode   Node?  @relation("ParentNodeChildNode", fields: [parentNodeId], references: [nodeId], onDelete: Cascade)
