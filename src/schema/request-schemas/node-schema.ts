@@ -6,9 +6,7 @@ const FILE_SIZE_LIMIT = 5242880;
 export const CreateNodeSchema = z
   .object({
     params: z.object({
-      userId: z.coerce
-        .number({ message: "User id must be a number" })
-        .optional(),
+      userId: z.coerce.number({ message: "User id must be a number" }),
     }),
     file: z
       .object({
