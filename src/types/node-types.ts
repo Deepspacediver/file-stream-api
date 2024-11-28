@@ -25,7 +25,7 @@ export type Folder = Pick<
 >;
 
 export type FolderWithSubFolders = Folder & {
-  children: FolderWithSubFolders[];
+  children?: FolderWithSubFolders[];
 };
 
 export type CreateNodeLinkProps = {
