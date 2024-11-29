@@ -2,8 +2,8 @@ import { Router } from "express";
 import {
   createUserPOST,
   deleteNodeDELETE,
-  getUserDataWithNodeTreeGET,
   getUserFoldersGET,
+  getUserFolderTreeGET,
   updateNodeNamePOST,
   uploadNodePOST,
 } from "../controllers/user-controller.js";
@@ -14,7 +14,7 @@ const usersRouter = Router();
 
 usersRouter
   .post("/", createUserPOST)
-  .get("/:userId", getUserDataWithNodeTreeGET)
+
   .post(
     "/:userId/nodes",
     isAuthenticated,
@@ -23,6 +23,7 @@ usersRouter
   )
   .post("/:userId/nodes/:nodeId", isAuthenticated, updateNodeNamePOST)
   .delete("/:userId/nodes/:nodeId", isAuthenticated, deleteNodeDELETE)
-  .get("/:userId/folders", getUserFoldersGET);
+  .get("/:userId/folders", getUserFoldersGET)
+  .get("/:userId/folder-tree", getUserFolderTreeGET);
 
 export default usersRouter;

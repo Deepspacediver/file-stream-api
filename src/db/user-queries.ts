@@ -2,12 +2,8 @@ import { NodeType } from "@prisma/client";
 import prisma from "../config/prisma-config.js";
 import { Node } from "../types/node-types.js";
 import { CreateUserRequest } from "../types/user-types.js";
-import {
-  queryFilesFromNode,
-  queryUserFolders,
-  queryUserNodes,
-} from "@prisma/client/sql";
-import { CreateNode, NodeWithSubNodes } from "../types/node-types.js";
+import { queryFilesFromNode, queryUserNodes } from "@prisma/client/sql";
+import { CreateNode } from "../types/node-types.js";
 import cloudinary from "../config/cloudinary-config.js";
 import transfromNodesToFolderTree from "../helpers/transform-to-folder-tree.js";
 
@@ -102,42 +98,25 @@ export const deleteNode = async (nodeId: number) => {
   await cloudinary.api.delete_resources(publicIdArray);
 };
 
-export const getNodeTree = async (
-  userId: number
-): Promise<NodeWithSubNodes | null> => {
-  const userNodes = (await prisma.$queryRawTyped(
-    queryUserNodes(userId)
-  )) as unknown as Node[] | null;
-
-  if (!userNodes) {
-    return null;
-  }
-
-  const nodeTree = transfromNodesToFolderTree(userNodes);
-
-  return nodeTree;
-};
-
-export const getUserDataWithNodeTree = async (userId: number) => {
-  const user = await getUserData(userId);
-  if (!user) {
-    return null;
-  }
-
-  const nodeTree = (await getNodeTree(userId)) ?? null;
-  return {
-    userId: user.userId,
-    username: user.username,
-    drive: nodeTree,
-  };
-};
-
 export const getUserFolders = async (userId: number) => {
-  const folders = await prisma.$queryRawTyped(queryUserFolders(userId));
-  const mappedFolders = folders.map(({ node_id, name }) => ({
-    nodeId: node_id,
-    name,
-  }));
+  const folders = await prisma.node.findMany({
+    where: {
+      userId,
+      type: NodeType.FOLDER,
+    },
+    select: {
+      nodeId: true,
+      name: true,
+      userId: true,
+      parentNodeId: true,
+    },
+  });
+  return folders;
+};
 
-  return mappedFolders;
+export const getUserFolderTree = async (userId: number) => {
+  const userFolders = await getUserFolders(userId);
+  const folderTree = transfromNodesToFolderTree(userFolders);
+
+  return folderTree;
 };

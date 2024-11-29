@@ -8,8 +8,8 @@ import {
   createNode,
   createUser,
   deleteNode,
-  getUserDataWithNodeTree,
   getUserFolders,
+  getUserFolderTree,
   updateNodeName,
 } from "../db/user-queries.js";
 import bcrypt from "bcryptjs";
@@ -23,17 +23,6 @@ import {
 import { randomUUID } from "crypto";
 import cloudinary from "../config/cloudinary-config.js";
 import { CreateNode } from "../types/node-types.js";
-
-export const getUserDataWithNodeTreeGET = asyncHandler(async (req, res) => {
-  schemaParser(UserDataSchema, req);
-  const { userId } = req.params;
-  const data = await getUserDataWithNodeTree(+userId);
-  if (!data) {
-    res.status(404).json({ error: "User does not exist" });
-    return;
-  }
-  res.json(data);
-});
 
 export const createUserPOST = asyncHandler(async (req, res, next) => {
   schemaParser(CreateUserSchema, req);
@@ -114,4 +103,11 @@ export const deleteNodeDELETE = asyncHandler(async (req, res) => {
   const { nodeId } = req.params;
   await deleteNode(+nodeId);
   res.json({ message: "Deleted successfully." });
+});
+
+export const getUserFolderTreeGET = asyncHandler(async (req, res) => {
+  schemaParser(GetUserFoldersSchema, req);
+  const { userId } = req.params;
+  const folderTree = await getUserFolderTree(+userId);
+  res.json(folderTree);
 });
