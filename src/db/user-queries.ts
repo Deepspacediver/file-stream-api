@@ -110,6 +110,9 @@ export const getUserFolders = async (userId: number) => {
       userId: true,
       parentNodeId: true,
     },
+    orderBy: {
+      parentNodeId: "desc",
+    },
   });
   return folders;
 };
