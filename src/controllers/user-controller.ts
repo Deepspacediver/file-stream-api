@@ -72,7 +72,6 @@ export const uploadNodePOST = asyncHandler(async (req, res) => {
       resource_type: "auto",
       flags: "attachment",
     });
-    // console.log(result);
     fileLink = result.secure_url;
     filePublicId = result.public_id;
   }

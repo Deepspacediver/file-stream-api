@@ -58,6 +58,7 @@ export const createNode = async (data: CreateNode) => {
       type: true,
       userId: true,
       fileLink: true,
+      nodeId: true,
     },
   });
   return createdNode;
