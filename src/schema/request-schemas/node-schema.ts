@@ -59,7 +59,7 @@ export const CreateNodeSchema = z
 
 export const CreateSharedNodeSchema = z.object({
   body: z.object({
-    nodeId: z.coerce.number({ message: "Node id must be an umber" }),
+    nodeId: z.coerce.number({ message: "Node id must be a number" }),
     expiryDate: z.coerce
       .date({ message: "Expiry date must be a date" })
       .refine((val: Date) => val > new Date(), {
@@ -97,6 +97,13 @@ export const UpdateNodeNameSchema = z.object({
 
 export const GetUserFoldersSchema = z.object({
   params: z.object({
+    userId: z.coerce.number({ message: "User id must be a number" }),
+  }),
+});
+
+export const GetUserFolderContentSchema = z.object({
+  params: z.object({
+    nodeId: z.coerce.number({ message: "Node id must be a number" }),
     userId: z.coerce.number({ message: "User id must be a number" }),
   }),
 });

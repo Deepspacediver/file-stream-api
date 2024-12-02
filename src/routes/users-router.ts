@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createUserPOST,
   deleteNodeDELETE,
+  getUserFolderContentGET,
   getUserFoldersGET,
   getUserFolderTreeGET,
   updateNodeNamePOST,
@@ -24,6 +25,7 @@ usersRouter
   .post("/:userId/nodes/:nodeId", isAuthenticated, updateNodeNamePOST)
   .delete("/:userId/nodes/:nodeId", isAuthenticated, deleteNodeDELETE)
   .get("/:userId/folders", getUserFoldersGET)
+  .get("/:userId/folders/:nodeId", getUserFolderContentGET)
   .get("/:userId/folder-tree", getUserFolderTreeGET);
 
 export default usersRouter;
