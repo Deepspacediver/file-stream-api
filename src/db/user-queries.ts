@@ -145,7 +145,7 @@ export const gerUserFolderContent = async ({
     },
   });
 
-  const folderName = await prisma.node.findFirst({
+  const folderData = await prisma.node.findFirst({
     where: {
       nodeId: folderId,
       userId,
@@ -156,7 +156,7 @@ export const gerUserFolderContent = async ({
   });
 
   return {
-    name: folderName?.name,
+    name: folderData?.name,
     content: folderNodes,
   };
 };
