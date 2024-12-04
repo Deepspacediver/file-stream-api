@@ -124,3 +124,39 @@ export const getUserFolderTree = async (userId: number) => {
 
   return folderTree;
 };
+
+export const gerUserFolderContent = async ({
+  userId,
+  folderId,
+}: {
+  folderId: number;
+  userId: number;
+}) => {
+  const folderNodes = await prisma.node.findMany({
+    where: {
+      parentNodeId: folderId,
+      userId,
+    },
+    select: {
+      nodeId: true,
+      fileLink: true,
+      type: true,
+      name: true,
+    },
+  });
+
+  const folderName = await prisma.node.findFirst({
+    where: {
+      nodeId: folderId,
+      userId,
+    },
+    select: {
+      name: true,
+    },
+  });
+
+  return {
+    name: folderName?.name,
+    content: folderNodes,
+  };
+};

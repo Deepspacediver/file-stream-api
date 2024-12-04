@@ -1,13 +1,11 @@
 import asyncHandler from "express-async-handler";
 import schemaParser from "../helpers/schema-parser.js";
-import {
-  CreateUserSchema,
-  UserDataSchema,
-} from "../schema/request-schemas/user-schema.js";
+import { CreateUserSchema } from "../schema/request-schemas/user-schema.js";
 import {
   createNode,
   createUser,
   deleteNode,
+  gerUserFolderContent,
   getUserFolders,
   getUserFolderTree,
   updateNodeName,
@@ -17,6 +15,7 @@ import { setAuthCookie } from "../helpers/auth-helpers.js";
 import {
   CreateNodeSchema,
   DeleteNodeSchema,
+  GetUserFolderContentSchema,
   GetUserFoldersSchema,
   UpdateNodeNameSchema,
 } from "../schema/request-schemas/node-schema.js";
@@ -109,4 +108,15 @@ export const getUserFolderTreeGET = asyncHandler(async (req, res) => {
   const { userId } = req.params;
   const folderTree = await getUserFolderTree(+userId);
   res.json(folderTree);
+});
+
+export const getUserFolderContentGET = asyncHandler(async (req, res) => {
+  schemaParser(GetUserFolderContentSchema, req);
+  const { userId, nodeId } = req.params;
+  const folderContent = await gerUserFolderContent({
+    userId: +userId,
+    folderId: +nodeId,
+  });
+
+  res.json(folderContent);
 });
