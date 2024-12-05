@@ -33,3 +33,12 @@ export type CreateNodeLinkProps = {
   expiryDate: Date;
   userId: number;
 };
+
+export type EditNode = {
+  userId: number;
+  node: {
+    nodeId: number;
+    name: string;
+    parentNodeId: number;
+  };
+};
