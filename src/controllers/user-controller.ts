@@ -106,8 +106,8 @@ export const updateNodePOST = asyncHandler(async (req, res) => {
 
 export const deleteNodeDELETE = asyncHandler(async (req, res) => {
   schemaParser(DeleteNodeSchema, req);
-  const { nodeId } = req.params;
-  await deleteNode(+nodeId);
+  const { nodeId, userId } = req.params;
+  await deleteNode(+nodeId, +userId);
   res.json({ message: "Deleted successfully." });
 });
 

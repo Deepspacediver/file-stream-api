@@ -63,7 +63,7 @@ export const createNode = async (data: CreateNode) => {
   return createdNode;
 };
 
-export const deleteNode = async (nodeId: number) => {
+export const deleteNode = async (nodeId: number, userId: number) => {
   const fileNodesWithinDeletedNode = (await prisma.$queryRawTyped(
     queryFilesFromNode(nodeId)
   )) as unknown as Array<{ file_public_id: string }>;
@@ -75,6 +75,7 @@ export const deleteNode = async (nodeId: number) => {
   await prisma.node.delete({
     where: {
       nodeId,
+      userId,
       AND: {
         parentNodeId: {
           not: null,

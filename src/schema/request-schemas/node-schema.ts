@@ -72,6 +72,7 @@ export const CreateSharedNodeSchema = z.object({
 export const DeleteNodeSchema = z.object({
   params: z.object({
     nodeId: z.coerce.number({ message: "Node id must be a number" }),
+    userId: z.coerce.number({ message: "User id must be a number" }),
   }),
 });
 
