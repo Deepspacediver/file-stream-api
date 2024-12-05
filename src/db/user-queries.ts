@@ -1,9 +1,8 @@
 import { NodeType } from "@prisma/client";
 import prisma from "../config/prisma-config.js";
-import { Node } from "../types/node-types.js";
 import { CreateUserRequest } from "../types/user-types.js";
-import { queryFilesFromNode, queryUserNodes } from "@prisma/client/sql";
-import { CreateNode } from "../types/node-types.js";
+import { queryFilesFromNode } from "@prisma/client/sql";
+import { CreateNode, EditNode } from "../types/node-types.js";
 import cloudinary from "../config/cloudinary-config.js";
 import transfromNodesToFolderTree from "../helpers/transform-to-folder-tree.js";
 
@@ -62,19 +61,6 @@ export const createNode = async (data: CreateNode) => {
     },
   });
   return createdNode;
-};
-
-export const updateNodeName = async (nodeId: number, newName: string) => {
-  const updatedNode = await prisma.node.update({
-    where: {
-      nodeId,
-    },
-    data: {
-      name: newName,
-    },
-  });
-
-  return updatedNode;
 };
 
 export const deleteNode = async (nodeId: number) => {
@@ -159,4 +145,21 @@ export const gerUserFolderContent = async ({
     name: folderData?.name,
     content: folderNodes,
   };
+};
+
+export const updateNode = async (data: EditNode) => {
+  const { userId, node } = data;
+
+  const updatedNode = await prisma.node.update({
+    where: {
+      userId,
+      nodeId: node.nodeId,
+    },
+    data: {
+      name: node.name,
+      parentNodeId: node.parentNodeId,
+    },
+  });
+
+  return updatedNode;
 };

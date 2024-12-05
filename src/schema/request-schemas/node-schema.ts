@@ -81,17 +81,20 @@ export const GetSharedNodeSchema = z.object({
   }),
 });
 
-export const UpdateNodeNameSchema = z.object({
+export const UpdateNodeSchema = z.object({
   params: z.object({
     nodeId: z.coerce.number({ message: "Node id must be a number" }),
     userId: z.coerce.number({ message: "User id must be a number" }),
   }),
   body: z.object({
-    newName: z
+    name: z
       .string({
         message: "New name for the resource must be a string",
       })
       .max(15, { message: "Name cannot exceed 15 characters" }),
+    parentNodeId: z.coerce.number({
+      message: "Id for the parent folder is required",
+    }),
   }),
 });
 
