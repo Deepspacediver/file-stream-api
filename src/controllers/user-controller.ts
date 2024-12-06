@@ -8,7 +8,7 @@ import {
   gerUserFolderContent,
   getUserFolders,
   getUserFolderTree,
-  updateNodeName,
+  updateNode,
 } from "../db/user-queries.js";
 import bcrypt from "bcryptjs";
 import { setAuthCookie } from "../helpers/auth-helpers.js";
@@ -17,11 +17,11 @@ import {
   DeleteNodeSchema,
   GetUserFolderContentSchema,
   GetUserFoldersSchema,
-  UpdateNodeNameSchema,
+  UpdateNodeSchema,
 } from "../schema/request-schemas/node-schema.js";
 import { randomUUID } from "crypto";
 import cloudinary from "../config/cloudinary-config.js";
-import { CreateNode } from "../types/node-types.js";
+import { CreateNode, EditNode } from "../types/node-types.js";
 
 export const createUserPOST = asyncHandler(async (req, res, next) => {
   schemaParser(CreateUserSchema, req);
@@ -88,18 +88,26 @@ export const uploadNodePOST = asyncHandler(async (req, res) => {
   res.json(node);
 });
 
-export const updateNodeNamePOST = asyncHandler(async (req, res) => {
-  schemaParser(UpdateNodeNameSchema, req);
-  const { nodeId } = req.params;
-  const { newName } = req.body;
-  const node = await updateNodeName(+nodeId, newName);
-  res.json(node);
+export const updateNodePOST = asyncHandler(async (req, res) => {
+  schemaParser(UpdateNodeSchema, req);
+  const { nodeId, userId } = req.params;
+  const { name, parentNodeId } = req.body;
+  const data: EditNode = {
+    userId: +userId,
+    node: {
+      nodeId: +nodeId,
+      name,
+      parentNodeId,
+    },
+  };
+  const updatedNode = await updateNode(data);
+  res.json(updatedNode);
 });
 
 export const deleteNodeDELETE = asyncHandler(async (req, res) => {
   schemaParser(DeleteNodeSchema, req);
-  const { nodeId } = req.params;
-  await deleteNode(+nodeId);
+  const { nodeId, userId } = req.params;
+  await deleteNode(+nodeId, +userId);
   res.json({ message: "Deleted successfully." });
 });
 
@@ -120,3 +128,5 @@ export const getUserFolderContentGET = asyncHandler(async (req, res) => {
 
   res.json(folderContent);
 });
+
+export const updateUserNode = asyncHandler(async (req, res) => {});

@@ -1,9 +1,8 @@
 import { NodeType } from "@prisma/client";
 import prisma from "../config/prisma-config.js";
-import { Node } from "../types/node-types.js";
 import { CreateUserRequest } from "../types/user-types.js";
-import { queryFilesFromNode, queryUserNodes } from "@prisma/client/sql";
-import { CreateNode } from "../types/node-types.js";
+import { queryFilesFromNode } from "@prisma/client/sql";
+import { CreateNode, EditNode } from "../types/node-types.js";
 import cloudinary from "../config/cloudinary-config.js";
 import transfromNodesToFolderTree from "../helpers/transform-to-folder-tree.js";
 
@@ -64,20 +63,7 @@ export const createNode = async (data: CreateNode) => {
   return createdNode;
 };
 
-export const updateNodeName = async (nodeId: number, newName: string) => {
-  const updatedNode = await prisma.node.update({
-    where: {
-      nodeId,
-    },
-    data: {
-      name: newName,
-    },
-  });
-
-  return updatedNode;
-};
-
-export const deleteNode = async (nodeId: number) => {
+export const deleteNode = async (nodeId: number, userId: number) => {
   const fileNodesWithinDeletedNode = (await prisma.$queryRawTyped(
     queryFilesFromNode(nodeId)
   )) as unknown as Array<{ file_public_id: string }>;
@@ -89,6 +75,7 @@ export const deleteNode = async (nodeId: number) => {
   await prisma.node.delete({
     where: {
       nodeId,
+      userId,
       AND: {
         parentNodeId: {
           not: null,
@@ -96,7 +83,9 @@ export const deleteNode = async (nodeId: number) => {
       },
     },
   });
-  await cloudinary.api.delete_resources(publicIdArray);
+  if (!!publicIdArray.length) {
+    await cloudinary.api.delete_resources(publicIdArray);
+  }
 };
 
 export const getUserFolders = async (userId: number) => {
@@ -145,7 +134,7 @@ export const gerUserFolderContent = async ({
     },
   });
 
-  const folderName = await prisma.node.findFirst({
+  const folderData = await prisma.node.findFirst({
     where: {
       nodeId: folderId,
       userId,
@@ -156,7 +145,24 @@ export const gerUserFolderContent = async ({
   });
 
   return {
-    name: folderName?.name,
+    name: folderData?.name,
     content: folderNodes,
   };
+};
+
+export const updateNode = async (data: EditNode) => {
+  const { userId, node } = data;
+
+  const updatedNode = await prisma.node.update({
+    where: {
+      userId,
+      nodeId: node.nodeId,
+    },
+    data: {
+      name: node.name,
+      parentNodeId: node.parentNodeId,
+    },
+  });
+
+  return updatedNode;
 };
