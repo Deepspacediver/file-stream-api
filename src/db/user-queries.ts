@@ -83,7 +83,9 @@ export const deleteNode = async (nodeId: number, userId: number) => {
       },
     },
   });
-  await cloudinary.api.delete_resources(publicIdArray);
+  if (!!publicIdArray.length) {
+    await cloudinary.api.delete_resources(publicIdArray);
+  }
 };
 
 export const getUserFolders = async (userId: number) => {
