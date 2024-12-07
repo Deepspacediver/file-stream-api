@@ -159,11 +159,14 @@ export const gerUserFolderContent = async ({
     },
     select: {
       name: true,
+      nodeId: true,
+      parentNodeId: true,
+      userId: true,
     },
   });
 
   return {
-    name: folderData?.name,
+    ...folderData,
     content: folderNodes,
   };
 };
