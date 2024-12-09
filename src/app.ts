@@ -66,7 +66,7 @@ passport.use(jwtStrategy);
 
 app.use("/auth", authRouter);
 app.use("/users", usersRouter);
-app.use("/nodes", nodeRouter);
+app.use("/shared-nodes", nodeRouter);
 
 app.use(errorMiddleware);
 
