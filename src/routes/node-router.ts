@@ -8,7 +8,7 @@ import {
 const nodeRouter = Router();
 
 nodeRouter
-  .post("/shared", isAuthenticated, createSharedNodePOST)
-  .get("/shared/:linkHash", getSharedNodeGET);
+  .post("", isAuthenticated, createSharedNodePOST)
+  .get("/:linkHash", getSharedNodeGET);
 
 export default nodeRouter;

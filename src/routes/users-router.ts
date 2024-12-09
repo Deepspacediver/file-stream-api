@@ -22,7 +22,7 @@ usersRouter
     upload.single("file"),
     uploadNodePOST
   )
-  .post("/:userId/nodes/:nodeId", isAuthenticated, updateNodePOST)
+  .put("/:userId/nodes/:nodeId", isAuthenticated, updateNodePOST)
   .delete("/:userId/nodes/:nodeId", isAuthenticated, deleteNodeDELETE)
   .get("/:userId/folders", getUserFoldersGET)
   .get("/:userId/folders/:nodeId", getUserFolderContentGET)

@@ -63,7 +63,25 @@ export const createNode = async (data: CreateNode) => {
   return createdNode;
 };
 
+const isNodeHomeFolder = async (nodeId: number) => {
+  const data = await prisma.node.findFirst({
+    where: {
+      AND: [
+        {
+          parentNodeId: null,
+        },
+        { nodeId },
+      ],
+    },
+  });
+
+  return !!data;
+};
+
 export const deleteNode = async (nodeId: number, userId: number) => {
+  if (await isNodeHomeFolder(nodeId)) {
+    throw new Error("Home folder cannot be deleted");
+  }
   const fileNodesWithinDeletedNode = (await prisma.$queryRawTyped(
     queryFilesFromNode(nodeId)
   )) as unknown as Array<{ file_public_id: string }>;
@@ -141,16 +159,22 @@ export const gerUserFolderContent = async ({
     },
     select: {
       name: true,
+      nodeId: true,
+      parentNodeId: true,
+      userId: true,
     },
   });
 
   return {
-    name: folderData?.name,
+    ...folderData,
     content: folderNodes,
   };
 };
 
 export const updateNode = async (data: EditNode) => {
+  if (await isNodeHomeFolder(data.node.nodeId)) {
+    throw new Error("Home folder cannot be edited");
+  }
   const { userId, node } = data;
 
   const updatedNode = await prisma.node.update({
