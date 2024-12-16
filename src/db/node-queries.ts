@@ -1,5 +1,5 @@
 import { queryNodesFromNodeId } from "@prisma/client/sql";
-import { CreateNodeLinkProps, Node } from "../types/node-types.js";
+import { CreateNodeLinkProps, Folder } from "../types/node-types.js";
 import prisma from "../config/prisma-config.js";
 import transfromNodesToFolderTree from "../helpers/transform-to-folder-tree.js";
 import { NodeType } from "@prisma/client";
@@ -47,11 +47,55 @@ export const getSharedNodeTree = async (linkHash: string) => {
   }
   const nodes = (await prisma.$queryRawTyped(
     queryNodesFromNodeId(nodeLink.sharedNodeId)
-  )) as Node[] | null;
+  )) as unknown as Folder[] | null;
 
   if (!nodes) {
     return null;
   }
+  return transfromNodesToFolderTree(nodes, nodeLink.sharedNodeId);
+};
 
-  return transfromNodesToFolderTree(nodes);
+export const getSharedNodeWithContent = async (linkHash: string) => {
+  const sharedNodeLink = await prisma.nodeShareLink.findFirst({
+    where: {
+      linkHash,
+    },
+  });
+
+  if (!sharedNodeLink) {
+    throw new Error("Folder with given link does not exists");
+  }
+  if (sharedNodeLink.expiryDate < new Date()) {
+    throw new Error("Link has expired");
+  }
+
+  const sharedNode = await prisma.node.findFirst({
+    where: {
+      nodeId: sharedNodeLink.sharedNodeId,
+    },
+    select: {
+      name: true,
+      nodeId: true,
+      parentNodeId: true,
+      userId: true,
+    },
+  });
+
+  const folderNodes = await prisma.node.findMany({
+    where: {
+      parentNodeId: sharedNode?.nodeId,
+      userId: sharedNode?.userId,
+    },
+    select: {
+      nodeId: true,
+      fileLink: true,
+      type: true,
+      name: true,
+    },
+  });
+
+  return {
+    ...sharedNode,
+    content: folderNodes,
+  };
 };
