@@ -1,4 +1,5 @@
-WITH RECURSIVE user_nodes AS (
+
+ WITH RECURSIVE user_nodes AS (
   SELECT 
     node_id, 
     parent_node_id,
@@ -8,7 +9,11 @@ WITH RECURSIVE user_nodes AS (
   FROM 
     "nodes"
   WHERE 
-    node_id = $1
+    node_id = ALL (
+        SELECT links.shared_node_id AS "sharedNodeId"
+        FROM "node_share_links" as links
+        WHERE links.link_hash = $1
+        )
   UNION 
     SELECT 
       r_nodes.node_id,
@@ -27,4 +32,4 @@ WITH RECURSIVE user_nodes AS (
   user_id "userId"
 FROM 
   user_nodes
-WHERE type = 'FOLDER';
+WHERE node_id = $2

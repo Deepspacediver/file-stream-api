@@ -14,12 +14,13 @@ const getIndexedNodes = (array: Folder[]) => {
 };
 
 const transfromNodesToFolderTree = (
-  nodes: Folder[]
+  nodes: Folder[],
+  searchedNodeId?: number
 ): FolderWithSubFolders | null => {
   const indexedNodes = getIndexedNodes(nodes);
 
   nodes.forEach((node) => {
-    if (!node.parentNodeId) {
+    if (searchedNodeId ? node.nodeId === searchedNodeId : !node.parentNodeId) {
       return;
     }
     const parentNodeKey = String(node.parentNodeId);
@@ -33,9 +34,9 @@ const transfromNodesToFolderTree = (
   });
 
   return (
-    (nodes.find((node) => !node.parentNodeId) as
-      | FolderWithSubFolders
-      | undefined) ?? null
+    (nodes.find((node) =>
+      searchedNodeId ? node.nodeId === searchedNodeId : !node.parentNodeId
+    ) as FolderWithSubFolders | undefined) ?? null
   );
 };
 

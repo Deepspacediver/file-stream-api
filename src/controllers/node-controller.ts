@@ -4,7 +4,11 @@ import {
   CreateSharedNodeSchema,
   GetSharedNodeSchema,
 } from "../schema/request-schemas/node-schema.js";
-import { createSharedNode, getSharedNodeTree } from "../db/node-queries.js";
+import {
+  createSharedNode,
+  getSharedNodeTree,
+  getSharedNodeWithContent,
+} from "../db/node-queries.js";
 
 export const createSharedNodePOST = asyncHandler(async (req, res) => {
   schemaParser(CreateSharedNodeSchema, req);
@@ -17,9 +21,18 @@ export const createSharedNodePOST = asyncHandler(async (req, res) => {
   res.json({ link: createdSharedNode });
 });
 
-export const getSharedNodeGET = asyncHandler(async (req, res) => {
+export const getSharedNodeTreeGET = asyncHandler(async (req, res) => {
   schemaParser(GetSharedNodeSchema, req);
   const { linkHash } = req.params;
   const nodeTree = await getSharedNodeTree(linkHash);
-  res.json({ drive: nodeTree });
+  res.json(nodeTree);
+});
+
+export const getSharedFolderWithContentGET = asyncHandler(async (req, res) => {
+  schemaParser(GetSharedNodeSchema, req);
+  const { linkHash } = req.params;
+  const { nodeId } = req.query;
+  const parsedNodeId = nodeId ? +nodeId : null;
+  const nodeTree = await getSharedNodeWithContent(linkHash, parsedNodeId);
+  res.json(nodeTree);
 });

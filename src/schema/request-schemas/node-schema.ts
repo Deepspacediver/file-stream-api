@@ -80,6 +80,12 @@ export const GetSharedNodeSchema = z.object({
   params: z.object({
     linkHash: z.string({ message: "Link to the resource is incorrect" }),
   }),
+  query: z.object({
+    nodeId: z.union([
+      z.coerce.number({ message: "Node id must be a number" }),
+      z.union([z.null(), z.undefined()]),
+    ]),
+  }),
 });
 
 export const UpdateNodeSchema = z.object({

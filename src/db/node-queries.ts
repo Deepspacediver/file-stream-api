@@ -1,5 +1,8 @@
-import { queryNodesFromNodeId } from "@prisma/client/sql";
-import { CreateNodeLinkProps, Node } from "../types/node-types.js";
+import {
+  queryFolderWithinSharedNode,
+  queryNodesFromNodeId,
+} from "@prisma/client/sql";
+import { CreateNodeLinkProps, Folder } from "../types/node-types.js";
 import prisma from "../config/prisma-config.js";
 import transfromNodesToFolderTree from "../helpers/transform-to-folder-tree.js";
 import { NodeType } from "@prisma/client";
@@ -47,11 +50,60 @@ export const getSharedNodeTree = async (linkHash: string) => {
   }
   const nodes = (await prisma.$queryRawTyped(
     queryNodesFromNodeId(nodeLink.sharedNodeId)
-  )) as Node[] | null;
+  )) as unknown as Folder[] | null;
 
   if (!nodes) {
     return null;
   }
+  return transfromNodesToFolderTree(nodes, nodeLink.sharedNodeId);
+};
 
-  return transfromNodesToFolderTree(nodes);
+export const getSharedNodeWithContent = async (
+  linkHash: string,
+  nodeId: number | null
+) => {
+  const sharedNodeLink = await prisma.nodeShareLink.findFirst({
+    where: {
+      linkHash,
+    },
+  });
+
+  if (!sharedNodeLink) {
+    throw new Error("Folder with given link does not exists");
+  }
+  if (sharedNodeLink.expiryDate < new Date()) {
+    throw new Error("Link has expired");
+  }
+
+  if (nodeId) {
+    const searchedFolderWithinSharedNode = await prisma.$queryRawTyped(
+      queryFolderWithinSharedNode(linkHash, nodeId)
+    );
+    if (!searchedFolderWithinSharedNode.length) {
+      throw new Error(
+        "Specified folder has not been found within shared folder"
+      );
+    }
+  }
+
+  const sharedNode = await prisma.node.findFirst({
+    where: {
+      nodeId: nodeId ?? sharedNodeLink.sharedNodeId,
+    },
+    select: {
+      name: true,
+      nodeId: true,
+      parentNodeId: true,
+      userId: true,
+      childNode: true,
+    },
+  });
+
+  return {
+    name: sharedNode?.name,
+    nodeId: sharedNode?.nodeId,
+    parentNodeId: sharedNode?.parentNodeId,
+    userId: sharedNode?.userId,
+    content: sharedNode?.childNode,
+  };
 };
