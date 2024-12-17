@@ -1,4 +1,7 @@
-import { queryNodesFromNodeId } from "@prisma/client/sql";
+import {
+  queryFolderWithinSharedNode,
+  queryNodesFromNodeId,
+} from "@prisma/client/sql";
 import { CreateNodeLinkProps, Folder } from "../types/node-types.js";
 import prisma from "../config/prisma-config.js";
 import transfromNodesToFolderTree from "../helpers/transform-to-folder-tree.js";
@@ -55,7 +58,10 @@ export const getSharedNodeTree = async (linkHash: string) => {
   return transfromNodesToFolderTree(nodes, nodeLink.sharedNodeId);
 };
 
-export const getSharedNodeWithContent = async (linkHash: string) => {
+export const getSharedNodeWithContent = async (
+  linkHash: string,
+  nodeId: number | null
+) => {
   const sharedNodeLink = await prisma.nodeShareLink.findFirst({
     where: {
       linkHash,
@@ -69,33 +75,35 @@ export const getSharedNodeWithContent = async (linkHash: string) => {
     throw new Error("Link has expired");
   }
 
+  if (nodeId) {
+    const searchedFolderWithinSharedNode = await prisma.$queryRawTyped(
+      queryFolderWithinSharedNode(linkHash, nodeId)
+    );
+    if (!searchedFolderWithinSharedNode.length) {
+      throw new Error(
+        "Specified folder has not been found within shared folder"
+      );
+    }
+  }
+
   const sharedNode = await prisma.node.findFirst({
     where: {
-      nodeId: sharedNodeLink.sharedNodeId,
+      nodeId: nodeId ?? sharedNodeLink.sharedNodeId,
     },
     select: {
       name: true,
       nodeId: true,
       parentNodeId: true,
       userId: true,
-    },
-  });
-
-  const folderNodes = await prisma.node.findMany({
-    where: {
-      parentNodeId: sharedNode?.nodeId,
-      userId: sharedNode?.userId,
-    },
-    select: {
-      nodeId: true,
-      fileLink: true,
-      type: true,
-      name: true,
+      childNode: true,
     },
   });
 
   return {
-    ...sharedNode,
-    content: folderNodes,
+    name: sharedNode?.name,
+    nodeId: sharedNode?.nodeId,
+    parentNodeId: sharedNode?.parentNodeId,
+    userId: sharedNode?.userId,
+    content: sharedNode?.childNode,
   };
 };

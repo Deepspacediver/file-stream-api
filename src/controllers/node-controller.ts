@@ -31,6 +31,8 @@ export const getSharedNodeTreeGET = asyncHandler(async (req, res) => {
 export const getSharedFolderWithContentGET = asyncHandler(async (req, res) => {
   schemaParser(GetSharedNodeSchema, req);
   const { linkHash } = req.params;
-  const nodeTree = await getSharedNodeWithContent(linkHash);
+  const { nodeId } = req.query;
+  const parsedNodeId = nodeId ? +nodeId : null;
+  const nodeTree = await getSharedNodeWithContent(linkHash, parsedNodeId);
   res.json(nodeTree);
 });
