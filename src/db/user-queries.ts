@@ -189,7 +189,7 @@ export const updateNode = async (data: EditNode) => {
     !!newlyChosenParentFolderAsChildOfEditedNode.length;
 
   if (isEditedFolderParentOfNewlyChosenParentFolder) {
-    throw new Error("Chosen parent folder is a child folder of edited node");
+    throw new Error("Chosen parent folder is a child folder of edited folder");
   }
 
   const updatedNode = await prisma.node.update({
