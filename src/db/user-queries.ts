@@ -1,7 +1,10 @@
 import { NodeType } from "@prisma/client";
 import prisma from "../config/prisma-config.js";
 import { CreateUserRequest } from "../types/user-types.js";
-import { queryFilesFromNode } from "@prisma/client/sql";
+import {
+  queryFilesFromNode,
+  queryFolderWithinSpecifiedFolder,
+} from "@prisma/client/sql";
 import { CreateNode, EditNode } from "../types/node-types.js";
 import cloudinary from "../config/cloudinary-config.js";
 import transfromNodesToFolderTree from "../helpers/transform-to-folder-tree.js";
@@ -176,6 +179,18 @@ export const updateNode = async (data: EditNode) => {
     throw new Error("Home folder cannot be edited");
   }
   const { userId, node } = data;
+
+  const newlyChosenParentFolderAsChildOfEditedNode =
+    await prisma.$queryRawTyped(
+      queryFolderWithinSpecifiedFolder(node.nodeId, node.parentNodeId)
+    );
+
+  const isEditedFolderParentOfNewlyChosenParentFolder =
+    !!newlyChosenParentFolderAsChildOfEditedNode.length;
+
+  if (isEditedFolderParentOfNewlyChosenParentFolder) {
+    throw new Error("Chosen parent folder is a child folder of edited folder");
+  }
 
   const updatedNode = await prisma.node.update({
     where: {
