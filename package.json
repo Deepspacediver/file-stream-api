@@ -8,7 +8,8 @@
     "dev": "tsc --watch & node --watch dist/app.js",
     "compile": "tsc --watch",
     "start": "node --watch dist/app.js",
-    "prisma-deploy": "npx prisma migrate deploy && npx prisma generate --sql"
+    "prisma-deploy": "npx prisma migrate deploy && npx prisma generate --sql",
+    "build": "npm run prisma-deploy & tsc & node dist/app.js"
   },
   "keywords": [],
   "author": "",
