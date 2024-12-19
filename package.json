@@ -12,7 +12,7 @@
     "build": "npm run prisma-deploy && tsc && node dist/app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Deepspacediver",
   "license": "ISC",
   "description": "",
   "dependencies": {
