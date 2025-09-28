@@ -56,7 +56,7 @@ export const getUserFoldersGET = asyncHandler(async (req, res) => {
 
 export const uploadNodePOST = asyncHandler(async (req, res) => {
   schemaParser(CreateNodeSchema, req);
-  //File is checked in schema
+  // File is checked in schema
   const file = req.file;
   let fileLink: string | null = null;
   let filePublicId: string | null = null;
